@@ -1,0 +1,319 @@
+﻿Shravya P
+
+
+To mount files from windows to wsl
+ls /mnt/c/
+cp /mnt/c/acess.log.txt /home/shravya
+cp /mnt/c/data.csv /home/shravya
+cd /home/shravya
+
+
+
+
+	15. Get user info from /etc/passwd and change ownership of user's home directory(userid >1000)
+
+
+#!/bin/bash
+
+
+gawk -F: '{print $1}' /etc/passwd;
+gawk -F: '$3>1000 {print $3}' /etc/passwd;
+
+
+	
+
+	1. Move files from one folder to another
+shravya@DESKTOP-8GPPRPU:~/example$ touch abc.txt def.txt ghi.txt jkl.txt
+
+
+#!/bin/bash
+
+
+for file in `ls *.txt`
+do
+        echo $file
+        bname=`echo $file|awk -F.  '{print $1}'`
+        ext=`echo $file |awk -F. '{print $2}'`
+        mkdir $bname
+        mv  $file $bname
+done
+Output:
+shravya@DESKTOP-8GPPRPU:~/example$ sh ex.sh
+abc.txt
+def.txt
+ghi.txt
+jkl.txt
+shravya@DESKTOP-8GPPRPU:~/example$ ls  *
+ex.sh
+
+
+abc:
+abc.txt
+
+
+def:
+def.txt
+
+
+ghi:
+ghi.txt
+
+
+jkl:
+Jkl.txt
+
+
+
+
+2. Print last 4 frequently access urls count in sorted order from /var/log/httpd/access.log
+
+
+shravya@DESKTOP-8GPPRPU:~$ cat access.log.txt|awk '{print $11}'|sort|uniq -c | tail -4
+   1141 "https://fundoopush-dev.bridgelabz.com/dashboard/article"
+      1 "https://fundoopush-dev.bridgelabz.com/dashboard/hashtags/animals"
+      5 "https://fundoopush-dev.bridgelabz.com/dashboard/jobs"
+   1475 "https://fundoopush-dev.bridgelabz.com/login"
+
+
+3. Print list of last 4 frequently access unique urls at particular hours from /var/log/httpd/access.log
+
+
+ shravya@DESKTOP-8GPPRPU:~$ cat access.log.txt|grep "[12/Oct/2019:10:16:10 +0000]"|awk '{print $11}'|sort|uniq -c|tail -4
+   1141 "https://fundoopush-dev.bridgelabz.com/dashboard/article"
+      1 "https://fundoopush-dev.bridgelabz.com/dashboard/hashtags/animals"
+      5 "https://fundoopush-dev.bridgelabz.com/dashboard/jobs"
+   1475 "https://fundoopush-dev.bridgelabz.com/login"
+
+
+4. Append current date to all log files name which has extension .log.1 from a folder
+
+
+shravya@DESKTOP-8GPPRPU:~$ touch abc.log.1 def.log.1 ghi.log.1 jkl.log.1 mno.log.1
+
+
+#!/bin/bash
+
+
+for file in `ls *.log.1`
+do
+        echo $file
+        fname=`echo $file| awk -F. '{print$1}'`
+        sname=`echo $file|awk -F. '{print $2}'`
+        date=`date +%d%m%Y`
+        filename=`echo $fname-$date.$sname`
+        mv $file $filename
+        echo $filename
+done
+
+
+shravya@DESKTOP-8GPPRPU:~$ sh log.sh
+abc.log.1
+abc-17082021.log
+def.log.1
+def-17082021.log
+ghi.log.1
+ghi-17082021.log
+jkl.log.1
+jkl-17082021.log
+mno.log.1
+mno-17082021.log
+
+
+5. Print list of web response code count in the unique sorted order at a specific hours
+
+
+ shravya@DESKTOP-8GPPRPU:~$ cat access.log.txt |awk '{print $9}' |sort | uniq -c
+ 3176 200
+      8 206
+     26 304
+
+
+6. Print a list of last 10 unique sorted client IP from /va/log/httpd/access.log
+
+
+shravya@DESKTOP-8GPPRPU:~$ cat access.log.txt | awk '{print $1}' | sort | uniq -c| tail -10
+    251 10.56.22.3
+    214 10.56.3.4
+      9 10.56.34.4
+    242 10.56.4.2
+      7 10.56.44.4
+     40 10.56.46.2
+    168 10.56.5.2
+    285 10.56.6.4
+    186 10.56.9.3
+      1 ﻿10.56.2.2
+
+
+7. Archive the files from /var/log folder which have modified7 days ago and move it to your backup folder
+
+
+shravya@DESKTOP-8GPPRPU:~$ mkdir backup
+shravya@DESKTOP-8GPPRPU:~$ nano backup.sh
+
+
+
+
+#!/bin/bash
+backup=~/backup;
+
+
+for file in `find /var/log -mtime +7`
+do
+        echo $file
+        sudo mv $file $backup;
+done
+
+
+shravya@DESKTOP-8GPPRPU:~$ sh backup.sh
+/var/log/btmp
+[sudo] password for shravya:
+/var/log/dist-upgrade
+/var/log/journal
+/var/log/landscape
+/var/log/lxd
+/var/log/unattended-upgrades
+/var/log/wtmp
+
+
+
+
+8. Check if a folder exists or not. If it's not present, create it.
+
+
+
+
+#!/bin/bash
+if [ -d MyDirectory ]
+then
+        echo "Directory already exists";
+else
+        mkdir MyDirectory;
+        echo "created MyDirectory"
+fi
+
+
+
+
+shravya@DESKTOP-8GPPRPU:~$ sh check.sh
+created MyDirectory
+shravya@DESKTOP-8GPPRPU:~$ sh check.sh
+Directory already exists
+
+
+9. Execute command "hello" and "ls" and check its execution status and print whether command executed successful or not
+
+
+#!/bin/bash
+hello
+echo "state of hello command $?"
+ls
+echo "state of ls command $?"
+
+
+shravya@DESKTOP-8GPPRPU:~$ nano hello.sh
+shravya@DESKTOP-8GPPRPU:~$ sh hello.sh
+Hello, world!
+state of hello command 0
+MyDirectory       abc.txt         backup     def               demo       demo2      ghi-17082021.     jkl-17082021.log  mno-17082021.log  test1.sh
+abc               abs             backup.sh  def-17082021.     demo.txt   demo2.txt  ghi-17082021.log  log.sh           test
+abc-17082021.     access.log.txt  check.sh   def-17082021.log  demo1      ex         hello.sh          ls               test.sh
+abc-17082021.log  acess_log.pdf   data.csv   def.txt           demo1.txt  example    jkl-17082021.     mno-17082021.    test1
+state of ls command 0
+
+
+10. Set environment usersecret="dH34xJaa23" if its already not set
+
+
+11. Find a word "systemd" from all log files in the folder /var/log and print number of occurrence more than 0 against each file
+
+
+
+
+#!/bin/bash
+
+
+for file in `ls /var/log`
+do
+        if [ -f /var/log/$file ]
+        then
+                occ=`sudo cat /var/log/$file |grep -ce systemd`;
+        if [ $occ -ne 0 ]
+        then
+                echo "$file $occ"
+        fi
+        fi
+done
+
+
+
+
+shravya@DESKTOP-8GPPRPU:~$ sh find.sh
+[sudo] password for shravya:
+dpkg.log 8
+
+
+12. Create process list table displays process id, parent process id, command name, %of memory consumed,% of CPU Utilization
+
+
+ shravya@DESKTOP-8GPPRPU:~$ ps -efo pid,ppid,cmd,%mem,%cpu
+  PID  PPID CMD                         %MEM %CPU
+    7     6 -bash HOSTTYPE=x86_64 LANG=  0.0  0.0
+  754     7  \_ sh process.sh LS_COLORS  0.0  0.0
+  755   754  |   \_ top LESSOPEN=| /usr  0.0  0.0
+  756   754  |   \_ awk  NR>11 {print $  0.0  0.0
+  757   754  |   \_ head -10 LESSOPEN=|  0.0  0.0
+  762     7  \_ ps -efo pid,ppid,cmd,%m  0.0  0.0
+
+
+13. Data analysis/Manipulation(awk)
+
+
+shravya@DESKTOP-8GPPRPU:~$ nano process.sh
+
+
+#!/bin/bash
+echo "EmployeeName and total pay with basepay > 10000"
+cat data.csv |awk '$4>10000 {print $2" "$7}'
+echo
+echo "total pay of captains"
+cat data.csv |awk '$3~/CAPTAIN/ {sum+=$7}END{print SUM}'
+echo
+echo "Job_Title Overtime_Pay"
+cat data.csv |awk '$5 >7000 && $5 <10000 {print $3" "$5}'
+echo
+echo "Average Base Pay"
+cat data.csv | awk '{sum+=$4} END {print sum/NR}'
+
+
+
+
+shravya@DESKTOP-8GPPRPU:~$ sh process.sh
+EmployeeName and total pay with basepay > 10000
+EmployeeName TotalPay
+NATHANIEL 567595
+GARY 538909
+ALBERT 335279
+CHRISTOPHER 332343
+PATRICK 326373
+DAVID 316285
+ALSON 315981
+DAVID 307899
+JOANNE 302377
+PATRICIA 297608
+EDWARD 294580
+
+
+total pay of captains
+
+
+
+
+Job_Title Overtime_Pay
+DEPUTYCHIEF 9737
+ASSTDEPUTY 8601
+
+
+Average Base Pay
+
+
+14. Find the difference between the original file and the updated file. Apply changes to the original file
